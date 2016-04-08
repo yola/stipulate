@@ -1,6 +1,6 @@
 import {expect} from 'chai';
-import {working} from '../src';
+import works from '../src';
 
 it('runs tests', () => {
-  expect(working()).to.be.true;
+  expect(works()).to.be.true;
 });
