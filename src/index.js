@@ -17,8 +17,9 @@ class Stipulate {
   send(url, options) {
     const config = defaultsDeep({}, options, this.baseOptions);
     const request = new Request(url, config);
+    const prefixedRequest = this.prefix(request);
 
-    return fetch(request);
+    return fetch(prefixedRequest).then(this.postfix);
   }
 }
 
