@@ -55,7 +55,7 @@ describe('makeOkCheck', () => {
 
     it('throws if status not ok and status code not acceptable', () => {
       const badResponse = {
-        ok: false,i
+        ok: false,
         status: 404
       };
       const checkNotOk = () => statusCodeCheck(badResponse);
