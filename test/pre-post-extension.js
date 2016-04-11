@@ -23,9 +23,7 @@ describe('Extended Stipulate', () => {
     };
   });
 
-  after(() => {
-    delete global.Request;
-  });
+  after(() => delete global.Request );
 
   describe('with custom prefix method', () => {
     before(() => {
@@ -36,9 +34,7 @@ describe('Extended Stipulate', () => {
       };
     });
 
-    after(() => {
-      delete global.fetch;
-    });
+    after(() => delete global.fetch );
 
     it('prefix method is called with request prior to fetch', () => {
       const extStip = new ExtStip();
@@ -55,9 +51,7 @@ describe('Extended Stipulate', () => {
       };
     });
 
-    after(() => {
-      delete global.fetch;
-    });
+    after(() => delete global.fetch );
 
     it('postfix method is called with response after fetch', () => {
       const extStip = new ExtStip();
