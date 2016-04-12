@@ -1,5 +1,6 @@
 import defaultsDeep from 'lodash.defaultsdeep';
 import pickBy from 'lodash.pickby';
+import makeOkCheck from './make-ok-check';
 
 class Stipulate {
 
@@ -7,11 +8,11 @@ class Stipulate {
     this.baseOptions = options;
   }
 
-  prefix(request) {
+  beforeRequest(request) {
     return request;
   }
 
-  postfix(response) {
+  afterResponse(response) {
     return response;
   }
 
@@ -23,9 +24,12 @@ class Stipulate {
     }
 
     const request = new Request(url, config);
-    const prefixedRequest = this.prefix(request);
+    const prefixedRequest = this.beforeRequest(request);
+    const checkOk = makeOkCheck(config);
 
-    return fetch(prefixedRequest).then(this.postfix);
+    return fetch(prefixedRequest)
+      .then(checkOk)
+      .then(this.afterResponse);
   }
 }
 

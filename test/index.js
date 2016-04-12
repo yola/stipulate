@@ -14,25 +14,25 @@ describe('Stipulate class', () => {
     expect(stipulateFoo.baseOptions).to.deep.equal(options);
   });
 
-  describe('prefix method', () => {
+  describe('beforeRequest method', () => {
     it('passes a request through untouched, by default', () => {
       const request = {
         fizz: 'buzz'
       };
       const stipulate = new Stipulate();
 
-      expect(stipulate.prefix(request)).to.deep.equal(request);
+      expect(stipulate.beforeRequest(request)).to.deep.equal(request);
     });
   });
 
-  describe('postfix method', () => {
+  describe('afterResponse method', () => {
     it('passes a response through untouched, by default', () => {
       const response = {
         hello: 'world'
       };
       const stipulate = new Stipulate();
 
-      expect(stipulate.postfix(response)).to.deep.equal(response);
+      expect(stipulate.afterResponse(response)).to.deep.equal(response);
     });
   });
 
@@ -45,6 +45,7 @@ describe('Stipulate class', () => {
       global.Request = function(url, options) {
         this.url = url;
         this.options = options;
+        this.ok = true;
       };
     });
 

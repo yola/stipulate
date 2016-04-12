@@ -5,12 +5,12 @@ import Stipulate from '../src';
 chai.use(chaiAsPromised);
 
 class ExtStip extends Stipulate {
-  prefix(request) {
+  beforeRequest(request) {
     request.foo = 'bar';
     return request;
   }
 
-  postfix(response) {
+  afterResponse(response) {
     return response.fizz;
   }
 }
@@ -20,23 +20,24 @@ describe('Extended Stipulate', () => {
     global.Request = function(url, options) {
       this.url = url;
       this.options = options;
+      this.ok = true;
     };
   });
 
   after(() => delete global.Request );
 
-  describe('with custom prefix method', () => {
+  describe('with custom beforeRequest method', () => {
     before(() => {
       global.fetch = (request) => {
         if(request.foo === 'bar') return Promise.resolve(request);
 
-        return Promise.reject('prefix not called before fetch');
+        return Promise.reject('beforeRequest not called before fetch');
       };
     });
 
     after(() => delete global.fetch );
 
-    it('prefix method is called with request prior to fetch', () => {
+    it('beforeRequest method is called with request prior to fetch', () => {
       const extStip = new ExtStip();
       const request = extStip.send('/foo');
 
@@ -44,16 +45,16 @@ describe('Extended Stipulate', () => {
     });
   });
 
-  describe('with custom postfix method', () => {
+  describe('with custom afterResponse method', () => {
     before(() => {
       global.fetch = () => {
-        return Promise.resolve({ fizz: 'buzz' });
+        return Promise.resolve({ fizz: 'buzz', ok: true });
       };
     });
 
     after(() => delete global.fetch );
 
-    it('postfix method is called with response after fetch', () => {
+    it('afterResponse method is called with response after fetch', () => {
       const extStip = new ExtStip();
       const request = extStip.send('/foo');
 
