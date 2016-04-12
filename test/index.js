@@ -92,5 +92,35 @@ describe('Stipulate class', () => {
 
       return expect(results).to.eventually.deep.equal(expected);
     });
+
+    it('does not include headers with no null or "" value', () => {
+      const url = '/fizz';
+      const nullHeader = {
+        headers: { foo: null }
+      };
+      const emptyHeader = {
+        headers: { bar: '' }
+      };
+      const expected = new Request(url, { headers: {} });
+      const stipulate = new Stipulate(nullHeader);
+      const results = stipulate.send(url, emptyHeader);
+
+      return expect(results).to.eventually.deep.equal(expected);
+    });
+
+    it('excludes base option header when set to null or ""', () => {
+      const url = '/boop';
+      const baseWithHeader = {
+        headers: { foo: 'bar' }
+      };
+      const override = {
+        headers: { foo: null }
+      };
+      const expected = new Request(url, { headers: {} });
+      const stipulate = new Stipulate(baseWithHeader);
+      const results = stipulate.send(url, override);
+
+      return expect(results).to.eventually.deep.equal(expected);
+    });
   });
 });

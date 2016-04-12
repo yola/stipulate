@@ -1,4 +1,5 @@
 import defaultsDeep from 'lodash.defaultsdeep';
+import pickBy from 'lodash.pickby';
 
 class Stipulate {
 
@@ -16,6 +17,11 @@ class Stipulate {
 
   send(url, options) {
     const config = defaultsDeep({}, options, this.baseOptions);
+
+    if(config.headers) {
+      config.headers = pickBy(config.headers, (value) => value);
+    }
+
     const request = new Request(url, config);
     const prefixedRequest = this.prefix(request);
 
