@@ -22,6 +22,36 @@ describe('makeOkCheck', () => {
 
       expect(checkNotOk).to.throw(Error);
     });
+
+    it('uses the statusText as the error message when throwing', () => {
+      const badResponse = {
+        ok: false,
+        statusText: 'Internal Server Error'
+      };
+      const checkErrMsg = () => defaultCheck(badResponse);
+
+      expect(checkErrMsg).to.throw(Error, 'Internal Server Error');
+    });
+
+    it('uses "Bad Response" as the error message when not statusText', () => {
+      const badResponse = {
+        ok: false
+      };
+      const checkErrMsg = () => defaultCheck(badResponse);
+
+      expect(checkErrMsg).to.throw(Error, 'Bad Response');
+    });
+
+    it('includes the response as a property of the error', () => {
+      const badResponse = {
+        ok: false,
+        statusText: 'foo'
+      };
+      const checkResProp = () => defaultCheck(badResponse);
+
+      expect(checkResProp).to.throw(Error)
+        .and.to.have.property('response', badResponse);
+    });
   });
 
   describe('given status codes to accept', () => {

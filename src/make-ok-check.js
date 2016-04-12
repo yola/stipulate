@@ -6,7 +6,8 @@ function makeOkCheck({ okCodes = [], test } = {}) {
 
     if(!test && (response.ok || codeOk)) return response;
 
-    const error = new Error();
+    const error = new Error(response.statusText || 'Bad Response');
+    error.response = response;
 
     throw error;
   }
