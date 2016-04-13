@@ -29,6 +29,6 @@ class Stipulate {
       .then(checkOk)
       .then(this.afterResponse);
   }
-}
+};
 
 export default Stipulate

@@ -7,7 +7,8 @@ describe('resolveUrl', () => {
       fizz: 'buzz'
     };
 
-    expect(resolveUrl('http://some.domain/foo')).to.equal('http://some.domain/foo');
+    expect(resolveUrl('http://some.domain/foo'))
+      .to.equal('http://some.domain/foo');
     expect(resolveUrl('/foo', q)).to.equal('/foo?fizz=buzz');
   });
 

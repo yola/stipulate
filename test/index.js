@@ -26,7 +26,8 @@ describe('Stipulate class', () => {
       };
       const stipulate = new Stipulate();
 
-      expect(stipulate.beforeRequest(url, options)).to.deep.equal([url, options]);
+      expect(stipulate.beforeRequest(url, options))
+        .to.deep.equal([url, options]);
     });
   });
 

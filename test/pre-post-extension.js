@@ -19,7 +19,9 @@ describe('Extended Stipulate', () => {
   describe('with custom beforeRequest method', () => {
     before(() => {
       global.fetch = (url, options) => {
-        if(options.foo === 'bar') return Promise.resolve({ ok: true });
+        if(options.foo === 'bar') {
+          return Promise.resolve({ ok: true });
+        }
 
         return Promise.reject('beforeRequest not called before fetch');
       };

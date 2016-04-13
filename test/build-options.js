@@ -67,7 +67,7 @@ describe('buildOptions', () => {
     expect(buildOptions(a, b)).to.deep.equal(expected);
   });
 
-  it('doesnt merge `okCodes`. first option set overrides second if both present', () => {
+  it('doesnt merge `okCodes`. prioritizes first option set', () => {
     const a = {
       okCodes: [400]
     };
