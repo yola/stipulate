@@ -5,9 +5,9 @@ import Stipulate from '../src';
 chai.use(chaiAsPromised);
 
 class ExtStip extends Stipulate {
-  beforeRequest(request) {
-    request.foo = 'bar';
-    return request;
+  beforeRequest(url, options) {
+    options.foo = 'bar';
+    return [url, options];
   }
 
   afterResponse(response) {
@@ -16,20 +16,10 @@ class ExtStip extends Stipulate {
 }
 
 describe('Extended Stipulate', () => {
-  before(() => {
-    global.Request = function(url, options) {
-      this.url = url;
-      this.options = options;
-      this.ok = true;
-    };
-  });
-
-  after(() => delete global.Request );
-
   describe('with custom beforeRequest method', () => {
     before(() => {
-      global.fetch = (request) => {
-        if(request.foo === 'bar') return Promise.resolve(request);
+      global.fetch = (url, options) => {
+        if(options.foo === 'bar') return Promise.resolve({ ok: true });
 
         return Promise.reject('beforeRequest not called before fetch');
       };

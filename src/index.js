@@ -1,6 +1,8 @@
 import defaultsDeep from 'lodash.defaultsdeep';
 import pickBy from 'lodash.pickby';
 import makeOkCheck from './make-ok-check';
+import buildOptions from './build-options';
+import resolveUrl from './resolve-url';
 
 class Stipulate {
 
@@ -8,26 +10,22 @@ class Stipulate {
     this.baseOptions = options;
   }
 
-  beforeRequest(request) {
-    return request;
+  beforeRequest(url, options) {
+    return [url, options];
   }
 
   afterResponse(response) {
     return response;
   }
 
-  send(url, options) {
-    const config = defaultsDeep({}, options, this.baseOptions);
+  send(urlString, options, query) {
+    const config = buildOptions(options, this.baseOptions);
+    const url = resolveUrl(urlString, query);
 
-    if(config.headers) {
-      config.headers = pickBy(config.headers, (value) => value);
-    }
-
-    const request = new Request(url, config);
-    const prefixedRequest = this.beforeRequest(request);
+    const requestArguments = this.beforeRequest(url, config);
     const checkOk = makeOkCheck(config);
 
-    return fetch(prefixedRequest)
+    return fetch(...requestArguments)
       .then(checkOk)
       .then(this.afterResponse);
   }

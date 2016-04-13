@@ -4,7 +4,11 @@ import Stipulate from '../src';
 
 chai.use(chaiAsPromised);
 
+// error handling tested elsewhere; bypass it
+const okBypass = () => true;
+
 describe('Stipulate class', () => {
+
   it('holds onto base options you instantiate it with', () => {
     const options = {
       foo: 'bar'
@@ -15,13 +19,14 @@ describe('Stipulate class', () => {
   });
 
   describe('beforeRequest method', () => {
-    it('passes a request through untouched, by default', () => {
-      const request = {
+    it('leaves the url and options unmodified by default', () => {
+      const url = '/foo';
+      const options = {
         fizz: 'buzz'
       };
       const stipulate = new Stipulate();
 
-      expect(stipulate.beforeRequest(request)).to.deep.equal(request);
+      expect(stipulate.beforeRequest(url, options)).to.deep.equal([url, options]);
     });
   });
 
@@ -38,90 +43,110 @@ describe('Stipulate class', () => {
 
   describe('send method', () => {
     before(() => {
-      global.fetch = (request) => {
-        return Promise.resolve(request);
-      };
-
-      global.Request = function(url, options) {
-        this.url = url;
-        this.options = options;
-        this.ok = true;
+      global.fetch = (url, options) => {
+        return Promise.resolve([url, options]);
       };
     });
 
     after(() => {
       delete global.fetch;
-      delete global.Request;
     });
 
-    it('calls Fetch with a Request for the URL and any options given', () => {
+    it('calls Fetch with the URL and any options given', () => {
       const stipulate = new Stipulate();
       const url = '/foo';
       const opts = {
-        bar: 'baz'
+        bar: 'baz',
+        test: okBypass
       };
-      const expected = new Request(url, opts);
       const results = stipulate.send(url, opts);
 
-      return expect(results).to.eventually.deep.equal(expected);
+      return expect(results).to.eventually.deep.equal([url, opts]);
     });
 
     it('merges options given with base options', () => {
       const stipulate = new Stipulate({ foo: 'bar' });
       const url = '/foo';
       const opts = {
-        fizz: 'buzz'
+        fizz: 'buzz',
+        test: okBypass
       };
       const combinedOpts = {
         foo: 'bar',
-        fizz: 'buzz'
+        fizz: 'buzz',
+        test: okBypass
       };
-      const expected = new Request(url, combinedOpts);
       const results = stipulate.send(url, opts);
 
-      return expect(results).to.eventually.deep.equal(expected);
+      return expect(results).to.eventually.deep.equal([url, combinedOpts]);
     });
 
     it('prioritizes latest given options when duplicating base options', () => {
       const stipulate = new Stipulate({ foo: 'bar' });
       const url = '/foo';
       const opts = {
-        foo: 'baz'
+        foo: 'baz',
+        test: okBypass
       };
-      const expected = new Request(url, opts);
       const results = stipulate.send(url, opts);
 
-      return expect(results).to.eventually.deep.equal(expected);
+      return expect(results).to.eventually.deep.equal([url, opts]);
     });
 
-    it('does not include headers with no null or "" value', () => {
+    it('does not include headers with a null or "" value', () => {
       const url = '/fizz';
       const nullHeader = {
-        headers: { foo: null }
+        headers: { foo: null },
+        test: okBypass
       };
       const emptyHeader = {
         headers: { bar: '' }
       };
-      const expected = new Request(url, { headers: {} });
+      const expectedOpts = {
+        headers: {},
+        test: okBypass
+      };
       const stipulate = new Stipulate(nullHeader);
       const results = stipulate.send(url, emptyHeader);
 
-      return expect(results).to.eventually.deep.equal(expected);
+      return expect(results).to.eventually.deep.equal([url, expectedOpts]);
     });
 
     it('excludes base option header when set to null or ""', () => {
       const url = '/boop';
       const baseWithHeader = {
-        headers: { foo: 'bar' }
+        headers: { foo: 'bar' },
+        test: okBypass
       };
       const override = {
         headers: { foo: null }
       };
-      const expected = new Request(url, { headers: {} });
+      const expectedOpts = {
+        headers: {},
+        test: okBypass
+      };
       const stipulate = new Stipulate(baseWithHeader);
       const results = stipulate.send(url, override);
 
-      return expect(results).to.eventually.deep.equal(expected);
+      return expect(results).to.eventually.deep.equal([url, expectedOpts]);
+    });
+
+    it('accepts a query object and merges it into the url', () => {
+      const url = '/foo?one=yes&two=yes';
+      const query = {
+        two: 'no',
+        three: 'maybe'
+      };
+      const opts = {
+        test: okBypass
+      };
+
+      const stipulate = new Stipulate();
+      const results = stipulate.send(url, opts, query);
+
+      return results.then(([url]) => {
+        expect(url).to.contain('two=no', 'one=yes', 'three=maybe');
+      });
     });
   });
 });
