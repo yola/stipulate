@@ -15,8 +15,8 @@ class ExtStip extends Stipulate {
   }
 }
 
-describe('Extended Stipulate', () => {
-  describe('with custom beforeRequest method', () => {
+describe('Before- and after-fetch hooks', () => {
+  describe('"beforeRequest" hook method', () => {
     before(() => {
       global.fetch = (url, options) => {
         if(options.foo === 'bar') {
@@ -29,7 +29,7 @@ describe('Extended Stipulate', () => {
 
     after(() => delete global.fetch );
 
-    it('beforeRequest method is called with request prior to fetch', () => {
+    it('is: called prior to fetch; given the url and options', () => {
       const extStip = new ExtStip();
       const request = extStip.send('/foo');
 
@@ -37,7 +37,7 @@ describe('Extended Stipulate', () => {
     });
   });
 
-  describe('with custom afterResponse method', () => {
+  describe('"afterResponse" hook method', () => {
     before(() => {
       global.fetch = () => {
         return Promise.resolve({ fizz: 'buzz', ok: true });
@@ -46,7 +46,7 @@ describe('Extended Stipulate', () => {
 
     after(() => delete global.fetch );
 
-    it('afterResponse method is called with response after fetch', () => {
+    it('is: called after a successful fetch; given the response', () => {
       const extStip = new ExtStip();
       const request = extStip.send('/foo');
 
