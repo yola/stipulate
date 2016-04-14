@@ -27,8 +27,36 @@ class Stipulate {
 
     return fetch(...requestArguments)
       .then(checkOk)
-      .then(this.afterResponse);
+      .then(this.afterResponse.bind(this));
   }
 };
 
-export default Stipulate
+class JsonStipulate extends Stipulate {
+
+  constructor(options) {
+    const baseJsonOpts = {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    };
+    const mergedOpts = buildOptions(options, baseJsonOpts);
+
+    super(mergedOpts);
+  }
+
+  beforeRequest(url, options) {
+    if(typeof options.body !== 'string') {
+      options.body = JSON.stringify(options.body);
+    }
+
+    return [url, options];
+  }
+
+  afterResponse(response) {
+    return response.json();
+  }
+}
+
+export { JsonStipulate };
+export default Stipulate;
