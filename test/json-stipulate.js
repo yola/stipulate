@@ -41,7 +41,7 @@ describe('JsonStipulate', () => {
         }
       };
       const url = '/boop';
-      const expected = "{\"foo\":true}";
+      const expected = '{\"foo\":true}';
 
       return expect(jsonStip.send(url, opts))
         .to.eventually.equal(expected);
