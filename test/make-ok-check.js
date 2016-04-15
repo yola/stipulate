@@ -1,12 +1,12 @@
-import makeOkCheck from '../src/make-ok-check';
+import enforceOk from '../src/enforce-ok';
 import {expect} from 'chai';
 
 
-describe('makeOkCheck', () => {
+describe('enforceOk', () => {
   describe('given no options', () => {
     let defaultCheck;
 
-    before(() => defaultCheck = makeOkCheck());
+    before(() => defaultCheck = enforceOk());
 
     it('defaults to checking http status is ok when given no opts', () => {
       const okResponse = { ok: true };
@@ -58,7 +58,7 @@ describe('makeOkCheck', () => {
     let statusCodeCheck;
 
     before(() => {
-      statusCodeCheck = makeOkCheck({ okCodes: [403, 500] });
+      statusCodeCheck = enforceOk({ okCodes: [403, 500] });
     });
 
     it('still passes response if status ok', () => {
@@ -98,7 +98,7 @@ describe('makeOkCheck', () => {
     let checkFoo;
 
     before(() => {
-      checkFoo = makeOkCheck({ test: res => res.foo === true });
+      checkFoo = enforceOk({ test: res => res.foo === true });
     });
 
     it('passes response if test returns true, regardless of status', () => {

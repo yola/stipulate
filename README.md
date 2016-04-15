@@ -1,20 +1,15 @@
 # stipulate
-A module extending the Fetch API with some useful default error handling and hooks.
+A module extending the Fetch API with some useful default error handling and data extraction.
 
 [![Build Status](https://travis-ci.org/yola/stipulate.svg?branch=master)](https://travis-ci.org/yola/stipulate)
 [![Coverage Status](https://coveralls.io/repos/github/yola/stipulate/badge.svg?branch=master)](https://coveralls.io/github/yola/stipulate?branch=master)
 
-Stipulate assumes the presence of a global `fetch`, in accordance with the [Fetch API spec](https://fetch.spec.whatwg.org/). If you are 
-using `fetch` and find yourself repeating configuration all over the place, Stipulate is here to help. A lot of
-the options you'll use with Stipulate correspond directly to ones used by fetch, so familiarity with the spec is
-helpful.
+Stipulate assumes the presence of a global `fetch`, in accordance with the [Fetch API spec](https://fetch.spec.whatwg.org/).
 
 ## Usage
 
-When you create an instance of Stipulate with an `options` object like one you'd send to fetch,
-those options get saved and sent with every request fired off from the instance.
 ```js
-import Stipulate from 'stipulate';
+import stipulate from 'stipulate';
 
 const options = {
   credentials: 'same-origin',
@@ -24,21 +19,28 @@ const options = {
   }
 };
 
-const stipulations = new Stipulate(options);
-
-const responsePromise = stipulations.send('/some/endpoint');
-// request includes above options
+const responsePromise = stipulate('/some/endpoint', options);
 ```
 
-If you need to extend the options fed to the instance on creation, you can send more.
+If you need to extend options, you can use the `buildOptions` export.
 ```js
+import { buildOptions } from 'stipulate';
+
+const opts = {
+  credentials: 'same-origin',
+  headers: {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+  }
+};
+
 const moreOpts = {
   headers: {
     'Cache-Control': 'no-cache'
   }
 };
 
-const responsePromise = stipulations.send('/some/endpoint', moreOpts);
+const mergedOpts = buildOptions(opts, moreOpts);
 //  {
 //    credentials: 'same-origin',
 //    headers: {
@@ -49,34 +51,48 @@ const responsePromise = stipulations.send('/some/endpoint', moreOpts);
 //  }
 ```
 
-If you want to leave out a header you set in the base options, you can override it with `null` or `''`.
+Null or empty string headers will not be written to merged options. If you pass `buildOptions` two
+options objects with the same header, one set to `null` or `""` and the other with a value, order matters.
 ```js
-const removeAccept = {
+const nullAcceptHeaderOpts = {
   headers: {
     'Accept': null
   }
 };
 
-const responsePromise = stipulations.send('/some/endpoint', removeAccept);
+const  = mergedOpts = buildOptions(nullAcceptHeaderOpts, opts);
+// buildOpts gives priority to first option set seen, so this would
+// produce:
 //  {
 //    credentials: 'same-origin',
 //    headers: {
 //      'Content-Type': 'application/json'
 //    }
 //  }
+
+buildOptions(opts, nullAcceptHeadersOpts);
+// this would produce:
+// {
+//   credentials: 'same-origin',
+//   headers: {
+//    'Accept': 'application/json',
+//    'Content-Type': 'application/json'
+//   }
+// }
 ```
 
-You can also include a query parameters object as the third argument, which will get resolved (with priority) onto
-the url you provided. Like headers, you can override query params from the url by passing `null` or `''` values
-to `Stipulate.send`.
+`resolveUrl` is a tool for adding query parameters from an object to a url string.
+Duplicate keys will get resolved with priority going to values found on the query object.
+Like headers, you can override query params from the url by passing `null` or `''` values
+for those params in the query object.
 ```js
 const query = {
   foo: '',
   zip: 'zap'
 };
 
-const response = stipulations.send('/some/endpoint?foo=bar&fizz=buzz', null, query);
-// will hit the url: "/some/endpoint?fizz=buzz&zip=zap"
+resolveUrl('http://some.domain/some/endpoint?foo=bar&fizz=buzz', query);
+// returns: "http://some.domain/some/endpoint?fizz=buzz&zip=zap"
 ```
 
 ### Errors
@@ -85,20 +101,13 @@ By default, Stipulate throws responses with non 2XX status codes. There are two 
 behavior:
 
 1) pass an `okCodes` array of status codes that are acceptable (beyond 2XX; this array extends that range)
-with other options at any point you would normally pass options
-
+as part of your options.
 ```js
-const foo = new Stipulate({ okCodes: [401, 403] });
-// requests send via foo.send will not throw 2XX, 401, or 403 responses
-const bar = new Stipulate();
-
-bar.send('/some/endpoint', { okCodes: [404] });
-// singular request will not throw a response with status code of 2XX or 404
-
-foo.send('/some/endpoint', { okCodes: [500] });
+const response = stipulate('/foobar', { okCodes: [401, 403] });
+// will not throw 2XX, 401, or 403 responses
 ```
 
-2) pass a `test` function with other options at any point you'd normally pass options.
+2) pass a `test` function with your options.
 
 ```js
 // e.g., to get fetch's normal behavior of fulfilling every request, regardless of success:
@@ -107,83 +116,22 @@ const neverReject = function(response) {
   return response;
 };
 
-const stipulation = new Stipulate({ test: neverReject });
-// OR
-const foo = new Stipulate();
-foo.send('/some/endpoint', { test: neverReject });
+const response = stipulate('/foo', { test: neverReject });
 ```
 
-### Extending Stipulate with pre- and post-send methods
+### Data Extraction
 
-If you'd like to add some sort of transform or action to either the front or back of all your requests,
-you've got two options:
-
-1) Extend the class, so every instance uses the hooks.
-
+By default, after checking for errors Stipulate will try to extract json from the response to return in a promise.
+If you want another data type (text and blob are some examples of other Fetch supported response data types) you can
+pass a third argument to stipulate, which is a string of the data type you want.
 ```js
-import Stipulate from 'stipulate';
-
-class Foo extends Stipulate {
-  beforeRequest(url, options) {
-    // do work on url, or options, or both
-    ...
-    return [url, options];
-  }
-
-  afterResponse(response) {
-    // do something with the response
-    ...
-    return resultOfYourWork;
-  }
-}
-
-const bar = new Foo();
-const responsePromise = bar.send('/some/endpoint');
+const textResponse = stipulate('/foo', options, 'text');
 ```
 
-2) Modify an instance, so other instances don't also use the hook.
-
+If you don't want any data extraction and just want the error handling, just import `enforceOk` and use it with fetch.
 ```js
-const foo = new Stipulate();
-const bar = new Stipulate();
+import { enforceOk } from 'stipulate';
 
-foo.beforeRequest = (url, options) => {
-  ...
-};
-
-const fooResponse = foo.send('/some/endpoint');
-const barResponse = bar.send('/some/endpoint');
-// same as above except without foo's beforeRequest results
-```
-
-An example use of the two would be a request factory that's going to send and receive json data by default:
-```js
-class JsonStipulate extends Stipulate {
-  beforeRequest(url, options) {
-    if(typeof options.body === 'object') {
-      options.body = JSON.stringify(options.body);
-    }
-
-    return [url, options];
-  }
-
-  afterResponse(response) {
-    return response.json();
-  }
-}
-
-const jsonStipulation = new JsonStipulate();
-
-jsonStipulation.send('/some/resource.json')
-  .then((jsonResponse) => {
-    // if the request was successful, the response is already parsed
-    ,,,
-  });
-
-const payload = {
-  method: 'POST',
-  body: { foo: 'bar', fizz: 'buzz' }
-};
-
-jsonStipulate.send('/some/endpoint', payload); // beforeRequest will stringify body for you
+const errorFreeResponse = fetch('/foobar', options).then(enforceOk(options));
+// enforceOk looks at your options for the "okCodes" or "test" keys
 ```

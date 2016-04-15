@@ -2,7 +2,7 @@
   "name": "stipulate",
   "version": "0.0.0",
   "description": "A module extending the Fetch API with some useful default error handling and hooks.",
-  "main": "src/index.js",
+  "main": "src/stipulate.js",
   "scripts": {
     "test": "babel-node node_modules/.bin/isparta cover --root src/ --report text --report lcov --report html node_modules/.bin/_mocha --",
     "coveralls": "cat coverage/lcov.info | node_modules/.bin/coveralls"
