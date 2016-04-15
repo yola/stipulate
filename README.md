@@ -3,6 +3,7 @@ A module extending the Fetch API with some useful default error handling and dat
 
 [![Build Status](https://travis-ci.org/yola/stipulate.svg?branch=master)](https://travis-ci.org/yola/stipulate)
 [![Coverage Status](https://coveralls.io/repos/github/yola/stipulate/badge.svg?branch=master)](https://coveralls.io/github/yola/stipulate?branch=master)
+[![Dependency Status](https://gemnasium.com/badges/github.com/yola/stipulate.svg)](https://gemnasium.com/github.com/yola/stipulate)
 
 Stipulate assumes the presence of a global `fetch`, in accordance with the [Fetch API spec](https://fetch.spec.whatwg.org/).
 
