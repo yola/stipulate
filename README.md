@@ -136,7 +136,8 @@ const result = stipulate('/foo', { test: neverReject });
 
 By default, after checking for errors Stipulate will try to extract json from the response to return in a promise.
 If you want another data type (text and blob are some examples of other supported response data types) you can
-pass a third argument to stipulate, which is the data type's name that you want.
+pass a third argument to stipulate, which is the data type's extraction method name (as a string) that you want.
+Data extraction methods can be found in the Fetch API spec under the [Body section](https://fetch.spec.whatwg.org/#concept-body-body).
 ```js
 const textResponse = stipulate('/foo', options, 'text');
 ```
