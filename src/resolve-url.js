@@ -1,6 +1,6 @@
-import url from 'url';
 import defaults from 'lodash.defaults';
 import pickBy from 'lodash.pickby';
+import url from 'url';
 
 const resolveUrl = function(urlString, query) {
   const parsedUrl = url.parse(urlString, true);

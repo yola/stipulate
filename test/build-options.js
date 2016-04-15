@@ -1,5 +1,5 @@
-import {expect} from 'chai';
 import buildOptions from '../src/build-options';
+import {expect} from 'chai';
 
 describe('buildOptions', () => {
 

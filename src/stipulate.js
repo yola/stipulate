@@ -1,5 +1,5 @@
-import enforceOk from './enforce-ok';
 import buildOptions from './build-options';
+import enforceOk from './enforce-ok';
 import resolveUrl from './resolve-url';
 
 const stipulate = (url, options, extract = 'json') => {
