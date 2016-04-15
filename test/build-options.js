@@ -9,27 +9,36 @@ describe('buildOptions', () => {
     expect(result).to.deep.equal({ foo: 'bar', fizz: 'buzz' });
   });
 
-  it('doesnt have to be given anything', () => {
+  it('returns object with same options when given one set', () => {
+    const a = {
+      foo: 'bar'
+    };
+
+    expect(buildOptions(a)).to.deep.equal(a);
+    expect(buildOptions(undefined, a)).to.deep.equal(a);
+  });
+
+  it('returns empty object when given nothing', () => {
     expect(buildOptions()).to.deep.equal({});
   });
 
   it('prioritizes key:value pairs in the first option set', () => {
-    const result = buildOptions({ foo: 'bar' }, { foo: 'baz' });
+    const result = buildOptions({ foo: 'GOOD' }, { foo: 'BAD' });
 
-    expect(result).to.deep.equal({ foo: 'bar' });
+    expect(result).to.deep.equal({ foo: 'GOOD' });
   });
 
   it('merges deep option sets', () => {
     const a = {
       foo: 'bar',
       fizz: {
-        buzz: 'zip'
+        buzz: 'GOOD'
       }
     };
     const b = {
       eany: 'meany',
       fizz: {
-        buzz: 'zap',
+        buzz: 'BAD',
         miney: 'moe'
       }
     };
@@ -37,7 +46,7 @@ describe('buildOptions', () => {
       eany: 'meany',
       foo: 'bar',
       fizz: {
-        buzz: 'zip',
+        buzz: 'GOOD',
         miney: 'moe'
       }
     };
@@ -55,7 +64,7 @@ describe('buildOptions', () => {
     const b = {
       headers: {
         zip: '',
-        zap: 'zoom'
+        zap: 'BAD'
       }
     };
     const expected = {
