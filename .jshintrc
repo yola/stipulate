@@ -1,1 +1,4 @@
-./node_modules/jsgreat/.jshintrc
+{
+  "extends": "./node_modules/jsgreat/es6/.jshintrc",
+  "module": true
+}
