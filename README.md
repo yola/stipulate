@@ -8,6 +8,17 @@ Stipulate assumes the presence of a global `fetch`, in accordance with the [Fetc
 
 ## Usage
 
+Simplest use-case would be fetching json data from an endpoint.
+```js
+import stipulate from 'stipulate';
+
+stipulate('/some/resource.json')
+  .then(console.log.bind(console));
+
+// => { "some": "data" }
+```
+
+If you want to do something else, you send options.
 ```js
 import stipulate from 'stipulate';
 
@@ -16,10 +27,12 @@ const options = {
   headers: {
     'Accept': 'application/json',
     'Content-Type': 'application/json'
-  }
+  },
+  method: 'POST',
+  body: JSON.stringify(someDataObject)
 };
 
-const responsePromise = stipulate('/some/endpoint', options);
+const postResult = stipulate('/some/endpoint', options);
 ```
 
 If you need to extend options, you can use the `buildOptions` export.
@@ -81,7 +94,7 @@ buildOptions(opts, nullAcceptHeadersOpts);
 // }
 ```
 
-`resolveUrl` is a tool for adding query parameters from an object to a url string.
+`resolveUrl` is a function for adding query parameters from an object to a url string.
 Duplicate keys will get resolved with priority going to values found on the query object.
 Like headers, you can override query params from the url by passing `null` or `''` values
 for those params in the query object.
@@ -97,14 +110,14 @@ resolveUrl('http://some.domain/some/endpoint?foo=bar&fizz=buzz', query);
 
 ### Errors
 
-By default, Stipulate throws responses with non 2XX status codes. There are two ways to modify this
+By default, Stipulate rejects responses with non 2XX status codes. There are two ways to modify this
 behavior:
 
 1) pass an `okCodes` array of status codes that are acceptable (beyond 2XX; this array extends that range)
 as part of your options.
 ```js
-const response = stipulate('/foobar', { okCodes: [401, 403] });
-// will not throw 2XX, 401, or 403 responses
+const result = stipulate('/foobar', { okCodes: [401, 403] });
+// will not reject 2XX, 401, or 403 responses
 ```
 
 2) pass a `test` function with your options.
@@ -116,14 +129,14 @@ const neverReject = function(response) {
   return response;
 };
 
-const response = stipulate('/foo', { test: neverReject });
+const result = stipulate('/foo', { test: neverReject });
 ```
 
 ### Data Extraction
 
 By default, after checking for errors Stipulate will try to extract json from the response to return in a promise.
-If you want another data type (text and blob are some examples of other Fetch supported response data types) you can
-pass a third argument to stipulate, which is a string of the data type you want.
+If you want another data type (text and blob are some examples of other supported response data types) you can
+pass a third argument to stipulate, which is the data type's name that you want.
 ```js
 const textResponse = stipulate('/foo', options, 'text');
 ```
