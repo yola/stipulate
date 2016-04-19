@@ -40,5 +40,12 @@
     "lodash.defaults": "~4.0.1",
     "lodash.defaultsdeep": "~4.3.4",
     "lodash.pickby": "~4.3.0"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify"
+      ]
+    ]
   }
 }
