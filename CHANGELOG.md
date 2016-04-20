@@ -1,5 +1,9 @@
 #Stipulate Changelog
 
+## 0.0.3
+
+- Stipulate no longer requires the environment to provide `Array.prototype.includes`. [#7](https://github.com/yola/stipulate/pull/7)
+
 ## 0.0.2
 
 - Fixes an issue where Stipulate would fail to bundle with consumers that use Browserify. [#5](https://github.com/yola/stipulate/pull/5)
