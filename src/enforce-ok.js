@@ -4,7 +4,7 @@ function makeOkCheck({ okCodes = [], test } = {}) {
       return response;
     }
 
-    const codeOk = okCodes.includes(response.status);
+    const codeOk = okCodes.indexOf(response.status) >= 0;
 
     if(!test && (response.ok || codeOk)) {
       return response;
