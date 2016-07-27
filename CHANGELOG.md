@@ -1,5 +1,9 @@
 #Stipulate Changelog
 
+## 0.0.5
+
+- Update dependencies to latest [#11](https://github.com/yola/stipulate/pull/11)
+
 ## 0.0.4
 
 - Update dependencies to latest [#9](https://github.com/yola/stipulate/pull/9)
