@@ -1,6 +1,6 @@
 {
   "name": "stipulate",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A module extending the Fetch API with some useful default error handling and hooks.",
   "main": "src/stipulate.js",
   "scripts": {
