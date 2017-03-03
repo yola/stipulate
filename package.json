@@ -39,7 +39,8 @@
   "dependencies": {
     "lodash.defaults": "~4.1.0",
     "lodash.defaultsdeep": "~4.5.0",
-    "lodash.pickby": "~4.5.0"
+    "lodash.pickby": "~4.5.0",
+    "url": "~0.11.0"
   },
   "browserify": {
     "transform": [
