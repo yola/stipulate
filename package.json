@@ -47,5 +47,9 @@
         "babelify"
       ]
     ]
+  },
+  "jspm": {
+    "format": "esm",
+    "registry": "npm"
   }
 }
