@@ -1,3 +1,6 @@
 cjs
 coverage
 node_modules
+package
+package-lock.json
+stipulate-*.tgz
