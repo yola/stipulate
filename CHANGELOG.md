@@ -1,5 +1,10 @@
 #Stipulate Changelog
 
+## Dev
+
+- Package CommonJS compatible code
+- Cleanup published artifact
+
 ## 0.0.5
 
 - Update dependencies to latest [#11](https://github.com/yola/stipulate/pull/11)
