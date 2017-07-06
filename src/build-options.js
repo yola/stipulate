@@ -1,11 +1,10 @@
-import defaultsDeep from 'lodash.defaultsdeep';
-import pickBy from 'lodash.pickby';
+import _ from 'lodash';
 
 const buildOptions = function(priority, defaults) {
-  const options = defaultsDeep({}, priority, defaults);
+  const options = _.defaultsDeep({}, priority, defaults);
 
   if(options.headers) {
-    options.headers = pickBy(options.headers, (value) => value);
+    options.headers = _.pickBy(options.headers, (value) => value);
   }
 
   if(priority && priority.okCodes) {

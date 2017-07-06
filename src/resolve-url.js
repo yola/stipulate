@@ -1,12 +1,11 @@
-import defaults from 'lodash.defaults';
-import pickBy from 'lodash.pickby';
+import _ from 'lodash';
 import url from 'url';
 
 const resolveUrl = function(urlString, query) {
   const parsedUrl = url.parse(urlString, true);
 
-  const mergedQuery = defaults({}, query, parsedUrl.query);
-  const fullQuery = pickBy(mergedQuery, (value) => value);
+  const mergedQuery = _.defaults({}, query, parsedUrl.query);
+  const fullQuery = _.pickBy(mergedQuery, (value) => value);
 
   delete parsedUrl.search;
   parsedUrl.query = fullQuery;
