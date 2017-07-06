@@ -2,10 +2,13 @@
   "name": "stipulate",
   "version": "0.0.5",
   "description": "A module extending the Fetch API with some useful default error handling and hooks.",
-  "main": "src/stipulate.js",
+  "main": "cjs/stipulate.js",
+  "module": "src/stipulate.js",
   "scripts": {
-    "test": "babel-node node_modules/.bin/isparta cover --root src/ --report text --report lcov --report html node_modules/.bin/_mocha --",
-    "coveralls": "cat coverage/lcov.info | node_modules/.bin/coveralls"
+    "compile-cjs": "scripts/compile-common-js.sh",
+    "coveralls": "cat coverage/lcov.info | node_modules/.bin/coveralls",
+    "prepublish": "npm run compile-cjs",
+    "test": "babel-node node_modules/.bin/isparta cover --root src/ --report text --report lcov --report html node_modules/.bin/_mocha --"
   },
   "repository": {
     "type": "git",
@@ -22,6 +25,8 @@
   "homepage": "https://github.com/yola/stipulate",
   "devDependencies": {
     "babel-cli": "~6.11.4",
+    "babel-plugin-add-module-exports": "~0.2.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "~6.24.1",
     "babel-preset-es2015": "~6.9.0",
     "babel-register": "~6.11.6",
     "chai": "~3.5.0",
@@ -30,11 +35,6 @@
     "isparta": "~4.0.0",
     "jsgreat": "~0.1.8",
     "mocha": "~2.5.3"
-  },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
   },
   "dependencies": {
     "lodash": "4.x"

@@ -1,0 +1,9 @@
+.babelrc
+.jshintrc
+.jshintrc-lr
+.lintrc
+coverage
+package
+scripts
+stipulate-*.tgz
+test

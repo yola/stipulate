@@ -1,5 +1,6 @@
-# Dependency directory
-/node_modules/
-
-# isparta reports
+cjs
 coverage
+node_modules
+package
+package-lock.json
+stipulate-*.tgz
