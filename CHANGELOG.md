@@ -1,6 +1,6 @@
-#Stipulate Changelog
+# Changelog
 
-## Dev
+## 0.1.0
 
 - Package CommonJS compatible code
 - Cleanup published artifact
