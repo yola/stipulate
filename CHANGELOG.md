@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+- Replace `url` node module usage with `url-join` & `URLSearchParams`
+
 ## 0.1.0
 
 - Package CommonJS compatible code

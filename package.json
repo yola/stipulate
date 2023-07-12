@@ -1,6 +1,6 @@
 {
   "name": "stipulate",
-  "version": "0.2.0",
+  "version": "0.2.0-raffa-rc.1",
   "description": "A module extending the Fetch API with some useful default error handling and hooks.",
   "main": "cjs/stipulate.js",
   "module": "src/stipulate.js",
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "lodash": "4.x",
-    "url-join": "~5.0.0"
+    "url-join": "^4.0.1"
   },
   "browserify": {
     "transform": [
