@@ -1,16 +1,17 @@
 import _ from 'lodash';
-import url from 'url';
+import urlJoin from 'url-join';
 
 const resolveUrl = function(urlString, query) {
-  const parsedUrl = url.parse(urlString, true);
+  const parselUrlQuery = Object.fromEntries(
+      new URLSearchParams(urlString)
+  );
 
-  const mergedQuery = _.defaults({}, query, parsedUrl.query);
+  const mergedQuery = _.defaults({}, query, parselUrlQuery);
   const fullQuery = _.pickBy(mergedQuery, (value) => value);
 
-  delete parsedUrl.search;
-  parsedUrl.query = fullQuery;
+  const searchParams = new URLSearchParams(fullQuery);
 
-  return url.format(parsedUrl);
+  return urlJoin(urlString, `?${searchParams.toString()}`);
 };
 
 export default resolveUrl;
