@@ -4,14 +4,14 @@ import urlJoin from 'url-join';
 const resolveUrl = function(urlString, query) {
   let parsedUrlQuery = {};
   let urlWithoutParams = urlString;
-  const hasParams = urlString.includes('?');
+  const queryStart = urlString.lastIndexOf('?');
 
-  if (hasParams){
-    const urlSplit = urlString.split('?');
+  if (queryStart !== -1){
+    const paramStr = urlString.slice(queryStart);
     parsedUrlQuery = Object.fromEntries(
-        new URLSearchParams(urlSplit[1])
+        new URLSearchParams(paramStr)
     );
-    urlWithoutParams = urlSplit[0];
+    urlWithoutParams = urlString.slice(0, queryStart);
   }
 
   const mergedQuery = _.defaults({}, query, parsedUrlQuery);
