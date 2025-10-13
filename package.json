@@ -37,7 +37,7 @@
     "mocha": "~2.5.3"
   },
   "dependencies": {
-    "lodash": "4.x",
+    "lodash": ">=4.17.21",
     "url-join": "^4.0.1"
   },
   "browserify": {
