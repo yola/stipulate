@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Update lodash dependency
+
 ## 0.2.0
 
 - Replace `url` node module usage with `url-join` & `URLSearchParams`
