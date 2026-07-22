@@ -1,6 +1,6 @@
 {
   "name": "stipulate",
-  "version": "0.2.1",
+  "version": "0.2.2-rc.ch.1",
   "description": "A module extending the Fetch API with some useful default error handling and hooks.",
   "main": "cjs/stipulate.js",
   "module": "src/stipulate.js",
@@ -37,7 +37,7 @@
     "mocha": "~2.5.3"
   },
   "dependencies": {
-    "lodash": ">=4.17.21",
+    "lodash": ">=4.18.1",
     "url-join": "^4.0.1"
   },
   "browserify": {
