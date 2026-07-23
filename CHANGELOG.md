@@ -1,6 +1,6 @@
 # Changelog
 
-## dev
+## 0.3.0
 
 - Bump up `lodash` version to `4.18.1` to fix security vulnerability
 
